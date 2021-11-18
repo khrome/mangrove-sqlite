@@ -1,0 +1,9 @@
+{
+  "name": "mangrove-sqlite",
+  "version": "0.0.1",
+  "main": "driver.js",
+  "dependencies": {
+    "better-sqlite3": "^7.4.4",
+    "mangrove-sql-adapter": "0.0.1"
+  }
+}
