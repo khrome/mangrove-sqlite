@@ -7,10 +7,16 @@ module.exports = {
           }catch(ex){}
       },
       client : function(usePooled){
-          return SQLite3(this.options.database, {});
+          return SQLite3;
       },
       connect: function(name, options, handler, cb){
-
+          if(!this.connection){
+              this.connection = this.client(this.options.database, name);
+          }
+          setTimeout(()={
+              cb(null, this.connection);
+          })
+          return this.connection;
       },
       loaderResultsHandler: function(err, res, itemHandler, cb){
 
@@ -37,9 +43,9 @@ module.exports = {
           switch(type){
               case 'string' : typeCreate = 'VARCHAR (255)'; break;
               case 'integer' : typeCreate = 'INTEGER'; break;
-              case 'bigint' : typeCreate = 'BIGINT'; break;
-              case 'object' : typeCreate = 'JSON'; break;
-              case 'float' : typeCreate = 'FLOAT (8)'; break;
+              case 'bigint' : typeCreate = 'INTEGER'; break;
+              case 'object' : typeCreate = 'BLOB'; break;
+              case 'float' : typeCreate = 'REAL'; break;
               //todo: handle arrays + arrays of objects as FKs
           }
           if(!typeCreate) throw new Error('Unrecognized Type: '+type);
@@ -59,7 +65,7 @@ module.exports = {
           return "SELECT * from "+tableName;
       },
       existsSQL : function(tableName){
-
+          return "SELECT name FROM sqlite_master WHERE type='table' AND name='"+tableName+"';"
       },
       saveSQL : function(table, fields, pk, object, valuesFn){
           var values = [];
